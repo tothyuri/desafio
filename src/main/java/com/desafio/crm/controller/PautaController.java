@@ -46,15 +46,5 @@ public class PautaController {
 		pautaRepository.delete(pauta);
 		return pautaRepository.findAll();
 	}
-	
-	protected Pauta votoSim(@RequestBody Pauta pauta) {
-		pauta.setNm_votosim(pauta.getNm_votosim()+1);
-		return pautaRepository.save(pauta);
-	}
-	
-	protected Pauta votoNao(@RequestBody Pauta pauta) {
-		pauta.setNm_votonao(pauta.getNm_votonao()+1);
-		return pautaRepository.save(pauta);
-	}
 
 }

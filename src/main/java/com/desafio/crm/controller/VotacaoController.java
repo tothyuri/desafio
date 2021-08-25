@@ -85,7 +85,7 @@ public class VotacaoController {
 		Map<?,?> resp = gson.fromJson(dados, Map.class);
 		
 		if(t1 == null) {
-			return "Não há sessão em aberto";			
+			return "Não há sessão em aberto";	
 		}
 		
 		Long id_pauta = null;
@@ -101,6 +101,7 @@ public class VotacaoController {
 		if(!t1.isAlive()) {
 			pauta.setTp_aberta(false);
 			pautaRepository.save(pauta);
+			return "Não há sessão em aberto";
 		}
 		Map<?,?> respValidaCPF = null;
 		String validaID = urlConnection.postJson("https://user-info.herokuapp.com/users/"+resp.get("cpf_associado"));
@@ -111,11 +112,12 @@ public class VotacaoController {
 		}
 		if(respValidaCPF != null && respValidaCPF.get("status").equals("ABLE_TO_VOTE")) {
 			String voto = (String) resp.get("voto");
-			PautaController pautacontroller = new PautaController();
 			if(voto.equalsIgnoreCase("sim")) {
-				pautacontroller.votoSim(pauta);
+				pauta.setNm_votosim(pauta.getNm_votosim()+1);
+				pautaRepository.save(pauta);
 			}else if(voto.equalsIgnoreCase("nao")) {
-				pautacontroller.votoNao(pauta);
+				pauta.setNm_votonao(pauta.getNm_votonao()+1);
+				pautaRepository.save(pauta);
 			}else {
 				return "voto não reconhecido";
 			}

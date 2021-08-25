@@ -70,14 +70,6 @@ public class Pauta {
 		this.ds_pauta = ds_pauta;
 	}
 
-	public String getDs_cometario() {
-		return ds_comentario;
-	}
-
-	public void setDs_cometario(String ds_cometario) {
-		this.ds_comentario = ds_cometario;
-	}
-
 	public Boolean getTp_aberta() {
 		return tp_aberta;
 	}
