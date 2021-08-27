@@ -101,14 +101,13 @@ public class VotacaoController {
 		}else {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Pauta não encontrado!");
 		}
-		
+		Optional<Pauta> pauta = pautaRepository.findById(id_pauta);
 		if(!th.containsKey(id_pauta)) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Sessão fechada para votação!");
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Sessão fechada para votação!\n\r Resultado da votação: Sim("+pauta.get().getNm_votosim()+") Não("+pauta.get().getNm_votonao()+").");
 		}
-		Pauta pauta = pautaRepository.getById(id_pauta);
 		if(!th.get(id_pauta).isAlive()) {
-			pauta.setTp_aberta(false);
-			pautaRepository.save(pauta);
+			pauta.get().setTp_aberta(false);
+			pautaRepository.save(pauta.get());
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sessão finalizada!");
 		}
 		Map<?,?> respValidaCPF = null;
@@ -123,11 +122,11 @@ public class VotacaoController {
 			cpfVoto.add((String)resp.get("cpf_associado"));
 			thCPF.put(id_pauta, cpfVoto);
 			if(voto.equalsIgnoreCase("sim")) {
-				pauta.setNm_votosim(pauta.getNm_votosim()+1);
-				pautaRepository.save(pauta);
+				pauta.get().setNm_votosim(pauta.get().getNm_votosim()+1);
+				pautaRepository.save(pauta.get());
 			}else if(voto.equalsIgnoreCase("nao")) {
-				pauta.setNm_votonao(pauta.getNm_votonao()+1);
-				pautaRepository.save(pauta);
+				pauta.get().setNm_votonao(pauta.get().getNm_votonao()+1);
+				pautaRepository.save(pauta.get());
 			}
 			else
 				throw new ResponseStatusException(HttpStatus.CONFLICT, "Voto não reconhecido!");
