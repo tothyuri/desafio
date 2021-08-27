@@ -32,7 +32,9 @@ public class VotacaoController {
 	private PautaRepository pautaRepository;
 	
 	private Map<Long,Thread> th= new TreeMap<>();
-	protected Gson gson = new Gson();
+	private Map<Long,List<Object>> thCPF= new TreeMap<>();
+	private List<Object> cpfVoto= new ArrayList<>();
+	private Gson gson = new Gson();
 	
 	@GetMapping
 	public List<Pauta> listar() {
@@ -116,8 +118,10 @@ public class VotacaoController {
 		}else {
 			respValidaCPF = gson.fromJson(validaID, Map.class);
 		}
-		if(respValidaCPF != null && respValidaCPF.get("status").equals("ABLE_TO_VOTE")) {
+		if(respValidaCPF != null && respValidaCPF.get("status").equals("ABLE_TO_VOTE") && (thCPF.get(id_pauta) != null ? !thCPF.get(id_pauta).contains(resp.get("cpf_associado")): true)) {
 			String voto = (String) resp.get("voto");
+			cpfVoto.add((String)resp.get("cpf_associado"));
+			thCPF.put(id_pauta, cpfVoto);
 			if(voto.equalsIgnoreCase("sim")) {
 				pauta.setNm_votosim(pauta.getNm_votosim()+1);
 				pautaRepository.save(pauta);
