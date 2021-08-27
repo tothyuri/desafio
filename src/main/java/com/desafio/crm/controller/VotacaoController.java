@@ -103,12 +103,12 @@ public class VotacaoController {
 		}
 		Optional<Pauta> pauta = pautaRepository.findById(id_pauta);
 		if(!th.containsKey(id_pauta)) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Sessão fechada para votação!\n\r Resultado da votação: Sim("+pauta.get().getNm_votosim()+") Não("+pauta.get().getNm_votonao()+").");
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Sessão em para votação! Resultado da votação: Sim("+pauta.get().getNm_votosim()+") Não("+pauta.get().getNm_votonao()+").");
 		}
 		if(!th.get(id_pauta).isAlive()) {
 			pauta.get().setTp_aberta(false);
 			pautaRepository.save(pauta.get());
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sessão finalizada!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sessão finalizada! Resultado da votação: Sim("+pauta.get().getNm_votosim()+") Não("+pauta.get().getNm_votonao()+").");
 		}
 		Map<?,?> respValidaCPF = null;
 		String validaID = urlConnection.postJson("https://user-info.herokuapp.com/users/"+resp.get("cpf_associado"));
